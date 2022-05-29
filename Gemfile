@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.0'
+ruby '3.0.4'
 
 gem 'bootsnap', '>= 1.4.4', require: false
 gem 'devise'
@@ -35,3 +35,5 @@ group :test do
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'wdm', '>= 0.1.0' if Gem.win_platform?
+#gem 'bootstrap-sass', '3.3.6'
