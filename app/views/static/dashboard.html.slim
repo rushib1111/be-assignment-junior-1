@@ -2,8 +2,8 @@
   aside.side-bar-area
     .friends-list
       p.friends-list-header FRIENDS
-      a.friend-name anbu
-      a.friend-name barath
+      - current_user.friends.each do |f|
+        a.friend-name =f.name
   .main-area
     .top-bar
       h1.top-bar-title Dashboard
@@ -15,38 +15,30 @@
       .balances-bar
         .balance-block
           p total balance
-          p + $11.50
+          p = (@data_you_owe[:total_amount] - @data_you_owed[:total_amount])
         .balance-block
           p you owe
-          p $0.00
+          p =@data_you_owe[:total_amount]
         .balance-block
           p you are owed
-          p $11.50
+          p =@data_you_owed[:total_amount]
       .dashboard-detail
         .detail-block
           h2.detail-title you owe
-          .user-detail
-            img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
-            .user-info
-              p anbu
-              p owes you $11.50
-          .user-detail
-            img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
-            .user-info
-              p anbu
-              p owes you $11.50
+          - @data_you_owe[:users].each do |dt|
+            .user-detail
+              img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
+              .user-info
+                p =u.name
+                p owes you #{dt[:amount]}
         .detail-block
           h2.detail-title you are owed
-          .user-detail
-            img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
-            .user-info
-              p anbu
-              p owes you $11.50
-          .user-detail
-            img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
-            .user-info
-              p anbu
-              p owes you $11.50
+          - @data_you_owed[:users].each do |dt|
+            .user-detail
+              img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
+              .user-info
+                p =u.name
+                p owes you #{dt[:amount]}
 #expenseModal.modal.fade aria-hidden="true" aria-labelledby="expenseModalLabel" tabindex="-1" 
   .modal-dialog
     .modal-content
@@ -54,7 +46,21 @@
         h5#expenseModalLabel.modal-title Add an expense
         button.btn-close aria-label="Close" data-bs-dismiss="modal" type="button" 
       .modal-body
-        | Fields to be added
+        = form_with url: "/add_expense" do |f|
+          
+          = f.label      :Description
+          = f.text_field :name
+          br
+          = f.label      :amount
+          = f.text_field :number
+          br
+          = f.label      :users
+          = f.select( :funds_held_on__c, options_for_select(User.all.pluck(:name)), { prompt: "Please select" }, multiple: true, size: 5 )
+          br
+          = f.label      :type
+          = f.select :desired_attribute, ['option1', 'option2']
+          br
+          = f.submit
       .modal-footer
         button.btn.btn-secondary data-bs-dismiss="modal" type="button"  Close
-        button.btn.btn-primary type="button"  Save changes
+        //button.btn.btn-primary type="button"  Save changes

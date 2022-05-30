@@ -4,4 +4,5 @@ Rails.application.routes.draw do
 
   root to: "static#dashboard"
   get 'people/:id', to: 'static#person'
+  post 'add_expense', to: 'static#add_expense'
 end
