@@ -19,6 +19,6 @@ class User < ApplicationRecord
       total_amount += exp.amount
       lended_users << {users: exp.users.where.not(id: self.id), amount: exp.amount}
     end
-    lended_users_hash = {users: lended_users, total_amount: total_amount}
+    lended_users_hash = {expenses: lended_users, total_amount: total_amount}
   end
 end

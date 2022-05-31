@@ -25,20 +25,22 @@
       .dashboard-detail
         .detail-block
           h2.detail-title you owe
-          - @data_you_owe[:users].each do |dt|
-            .user-detail
-              img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
-              .user-info
-                p =u.name
-                p owes you #{dt[:amount]}
+          - @data_you_owe[:expenses].each do |dt|
+            - dt[:users].each do |u|
+              .user-detail
+                img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
+                .user-info
+                  p =u.name
+                  p owes you #{dt[:amount]}
         .detail-block
           h2.detail-title you are owed
-          - @data_you_owed[:users].each do |dt|
-            .user-detail
-              img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
-              .user-info
-                p =u.name
-                p owes you #{dt[:amount]}
+          - @data_you_owed[:expenses].each do |dt|
+            - dt[:users].each do |u|
+              .user-detail
+                img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
+                .user-info
+                  p =u.name
+                  p owes you #{dt[:amount]}
 #expenseModal.modal.fade aria-hidden="true" aria-labelledby="expenseModalLabel" tabindex="-1" 
   .modal-dialog
     .modal-content
@@ -49,17 +51,22 @@
         = form_with url: "/add_expense" do |f|
           
           = f.label      :Description
-          = f.text_field :name
+          hr
+          = f.text_field :description
           br
           = f.label      :amount
-          = f.text_field :number
+          hr
+          = f.text_field :amount
           br
           = f.label      :users
-          = f.select( :funds_held_on__c, options_for_select(User.all.pluck(:name)), { prompt: "Please select" }, multiple: true, size: 5 )
+          hr
+          = f.select( :users, options_for_select(User.all.where.not(id: current_user.id).pluck(:name)), { prompt: "Please select" }, multiple: true )
           br
-          = f.label      :type
-          = f.select :desired_attribute, ['option1', 'option2']
+          = f.label      :paid_by
+          hr
+          = f.select :paid_by, User.all.pluck(:name)
           br
+          hr
           = f.submit
       .modal-footer
         button.btn.btn-secondary data-bs-dismiss="modal" type="button"  Close
