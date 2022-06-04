@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2022_05_30_073408) do
     t.decimal "amount"
     t.integer "paid_by"
     t.string "description"
+    t.decimal "individual_amount"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_expenses_on_user_id"

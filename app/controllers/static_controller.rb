@@ -5,19 +5,26 @@ class StaticController < ApplicationController
   end
 
   def person
+    @friend = User.find_by(id: params[:id])
+    @expenses = Expense.includes(:expense_details).where(expense_details: {user_id: [current_user.id, @friend.id]})
   end
 
   def add_expense
     users = params[:users].compact
-    expense = Expense.create(paid_by: current_user.id,  description: params[:description], amount: params[:amount])
+    paid_by = User.find_by(name: params[:paid_by])
+    expense = Expense.create(paid_by: paid_by.id,  description: params[:description], amount: params[:amount])
     users << current_user.name
+    users_count = 0
     users.each do |user|
       u = User.find_by(name: user)
       if u.present?
         nature = "Borrow"
         nature = "Lend" if u.name == params[:paid_by]
-        ExpenseDetail.create(user_id: u.id, expense_id: expense.id, nature: nature)
+        expense.expense_details.create(user_id: u.id, nature: nature)
+        users_count += 1
       end
     end
+    individual_amount = (params[:amount].to_i/users_count).round(2) rescue 0
+    expense.update(individual_amount: individual_amount)
   end
 end

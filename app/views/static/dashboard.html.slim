@@ -15,7 +15,7 @@
       .balances-bar
         .balance-block
           p total balance
-          p = (@data_you_owe[:total_amount] - @data_you_owed[:total_amount])
+          p = (@data_you_owed[:total_amount] - @data_you_owe[:total_amount])
         .balance-block
           p you owe
           p =@data_you_owe[:total_amount]

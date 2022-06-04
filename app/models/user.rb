@@ -16,8 +16,8 @@ class User < ApplicationRecord
     lended_users = []
     total_amount = 0
     Expense.where(id: expense_ids).each do |exp|
-      total_amount += exp.amount
-      lended_users << {users: exp.users.where.not(id: self.id), amount: exp.amount}
+      total_amount += exp.individual_amount
+      lended_users << {users: exp.users.where.not(id: self.id), amount: exp.individual_amount}
     end
     lended_users_hash = {expenses: lended_users, total_amount: total_amount}
   end
