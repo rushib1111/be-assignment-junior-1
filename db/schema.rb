@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2022_05_30_073408) do
     t.integer "user_id"
     t.integer "expense_id"
     t.integer "nature"
+    t.integer "status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

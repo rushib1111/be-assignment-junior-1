@@ -1,12 +1,7 @@
-class StaticController < ApplicationController
+class ExpensesController < ApplicationController
   def dashboard
     @data_you_owe = current_user.list_of_expenses_and_users(0) 
     @data_you_owed = current_user.list_of_expenses_and_users(1) 
-  end
-
-  def person
-    @friend = User.find_by(id: params[:id])
-    @expenses = Expense.includes(:expense_details).where(expense_details: {user_id: [current_user.id, @friend.id]})
   end
 
   def add_expense
@@ -26,5 +21,17 @@ class StaticController < ApplicationController
     end
     individual_amount = (params[:amount].to_i/users_count).round(2) rescue 0
     expense.update(individual_amount: individual_amount)
+    redirect_to "/expenses/my_expenses"
+  end
+
+  def settle_expense
+    detail = ExpenseDetail.joins(:expense).where(expense: {description: params[:expense]}, expense_details: {user_id: current_user.id}).last
+    detail.update(status: params[:status]) if detail.present?
+    redirect_to "/expenses/my_expenses"
+  end
+  
+  def my_expenses
+    @friend = User.find_by(id: current_user.id)
+    @expenses = current_user.expenses
   end
 end

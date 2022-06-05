@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  def my_expenses
-    @friend = User.find_by(id: current_user.id)
-    @expenses = current_user.expenses
+  def friend_expenses
+    @friend = User.find_by(id: params[:id])
+    @expenses = Expense.includes(:expense_details).where(expense_details: {user_id: [current_user.id, @friend.id]})
   end
 end

@@ -3,13 +3,19 @@
     .friends-list
       p.friends-list-header FRIENDS
       - current_user.friends.each do |f|
-        a.friend-name =f.name
+        a.friend-name href="/users/#{f.id}/friend_expenses" =f.name
+    br
+    br
+    .friends-list
+      a.btn.btn-primary href="/expenses/my_expenses" My Expenses
+
+
+
   .main-area
     .top-bar
       h1.top-bar-title Dashboard
       .top-bar-actions
         button.btn.btn-primary type="button" data-bs-toggle="modal" data-bs-target="#expenseModal"  Add an expense
-        button.btn.btn-secondary type="button"  Settle up
 
     .dashboard-balances
       .balances-bar
@@ -48,7 +54,7 @@
         h5#expenseModalLabel.modal-title Add an expense
         button.btn-close aria-label="Close" data-bs-dismiss="modal" type="button" 
       .modal-body
-        = form_with url: "/add_expense" do |f|
+        = form_with url: "expenses/add_expense" do |f|
           
           = f.label      :Description
           hr

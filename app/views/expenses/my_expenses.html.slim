@@ -1,0 +1,82 @@
+.dashboard-wrapper
+  aside.side-bar-area
+    .friends-list
+      p.friends-list-header FRIENDS
+      - current_user.friends.each do |f|
+        a.friend-name href="/users/#{f.id}/friend_expenses" =f.name
+  .main-area
+    .top-bar
+      h1.top-bar-title My Expenses
+      .top-bar-actions
+        button.btn.btn-primary type="button" data-bs-toggle="modal" data-bs-target="#expenseModal"  Add an expense
+        button.btn.btn-secondary type="button" data-bs-toggle="modal" data-bs-target="#settleUp"  Settle up
+    .expenses-list
+      - @expenses.each do |exp|
+        .expense-item
+          .item-lhs
+            p =exp.created_at.to_formatted_s(:long)
+            p =exp.description
+          .item-rhs
+            .you-details
+              p you paid
+              p =(exp.paid_by == current_user.id ? exp.amount: 0)
+            .you-details
+              p you borrowed
+              p =(exp.paid_by != current_user.id ? exp.individual_amount: 0)
+          button.remove-btn
+
+#expenseModal.modal.fade aria-hidden="true" aria-labelledby="expenseModalLabel" tabindex="-1" 
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h5#expenseModalLabel.modal-title Add an expense
+        button.btn-close aria-label="Close" data-bs-dismiss="modal" type="button" 
+      .modal-body
+        = form_with url: "expenses/add_expense" do |f|
+          
+          = f.label      :Description
+          hr
+          = f.text_field :description
+          br
+          = f.label      :amount
+          hr
+          = f.text_field :amount
+          br
+          = f.label      :users
+          hr
+          = f.select( :users, options_for_select(User.all.where.not(id: current_user.id).pluck(:name)), { prompt: "Please select" }, multiple: true )
+          br
+          = f.label      :paid_by
+          hr
+          = f.select :paid_by, User.all.pluck(:name)
+          br
+          hr
+          = f.submit
+      .modal-footer
+        button.btn.btn-secondary data-bs-dismiss="modal" type="button"  Close
+        //button.btn.btn-primary type="button"  Save changes
+
+
+#settleUp.modal.fade aria-hidden="true" aria-labelledby="settleUp" tabindex="-1" 
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h5#settleUp.modal-title Settle an expense
+        button.btn-close aria-label="Close" data-bs-dismiss="modal" type="button" 
+      .modal-body
+        = form_with url: "settle_expense" do |f|
+          
+          = f.label      :Expense
+          hr
+          br
+          = f.select :expense, current_user.expenses.pluck(:description)
+          br
+          = f.label      :status
+          hr
+          = f.select :status, ["Pending", "Completed"]
+          br
+          hr
+          = f.submit
+      .modal-footer
+        button.btn.btn-secondary data-bs-dismiss="modal" type="button"  Close
+        //button.btn.btn-primary type="button"  Save changes
